@@ -62,6 +62,12 @@ Como identificar uma regex ?
 Componentes de uma Regex:
 
 - Modificadores
+
+    /g  (g)lobal matching 
+    /i  case (i)nsensitive search
+    /x  e(x)tende permite adicionar comentarios na regex
+    /m  permite procurar em strings (m)ultiline
+
 - Metacharacteres
 
     \ Escapa o próximo caractere, utilizado para procurar uma / por exemplo
