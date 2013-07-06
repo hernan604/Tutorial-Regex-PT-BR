@@ -1,5 +1,6 @@
 Regex Matching
 O que são regexes, como funcionam e exemplos práticos
+por: Hernan Lopes
 
 O que são regexes
 
