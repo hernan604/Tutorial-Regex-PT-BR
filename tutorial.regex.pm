@@ -231,6 +231,9 @@ END
                 Isso prova que ela não é tão eficiente para detectar emails incorretos
   @           obrigatoriamente um email
   ([^\s]+))   qualquer coisa que não seja espaço
+
+  O ideal seria usar [A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,4} 
+  Alguns serviços ainda fazem um ping no domínio para rerificar se tem uma máquina ativa no domínio especificado no email
     
 
   Solução para o Caso 2:
