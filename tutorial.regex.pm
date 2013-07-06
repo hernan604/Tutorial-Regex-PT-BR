@@ -61,6 +61,23 @@ Como identificar uma regex ?
 
 Componentes de uma Regex:
 
+    [a-z] um caractere de minúsculo a até z
+    [A-Z] um caractere maiúsculo de A até Z
+    [0-9] um digito de 0 a 9
+    \w    uma letra    w é de word   ( perceba que é w minúsculo )
+    \W    qualquer coisa menos letra ( perceba que é W maiúsculo )
+    \s    espaço
+    \S    qualquer coisa menos espaço
+    \d    um digito
+    \D    qualquer coisa menos um digito
+
+    combinações são possíveis, ex:
+
+    [a-zA-Z]  procura caracteres de a até z, minusculos e maiúsculos
+    [a-z0-9]  procura de a até z minusculo ou digitos entre 0 e 9
+    [a-z0-9]+ procura um ou mais caracteres de a até z 
+              minusculo ou digitos entre 0 e 9, por ex uma "palavra"
+
 - Modificadores
 
     /g  (g)lobal matching 
@@ -87,42 +104,27 @@ Componentes de uma Regex:
     {N,} pelo menos N vezes
     {N,M} pelo menos N vezes mas não mais que M vezes
 
-    *? 0 ou mais vezes, não greedily
-    +? 1 ou mais vezes, não greedily
-    ?? 1 ou 0 vezes, not greedily
-    {n}? exatamente N vezes, not greedily (redundant)
-    {n,}? pelo menos N vezes, not greedily
-    {n,m}? pelo menos N vezes mas não mais que M vezes, not greedily
-
-    *+ Match 0 or more times and give nothing back
-    ++ Match 1 or more times and give nothing back
-    ?+ Match 0 or 1 time and give nothing back
-    {n}+ Match exactly n times and give nothing back (redundant)
-    {n,}+ Match at least n times and give nothing back
-    {n,m}+ Match at least n but not more than m times and give nothing back
-
 - Caracteres escapáveis
 
     \t tab (HT, TAB)
-    \n newline (LF, NL)
+    \n nova linha (LF, NL)
     \r return (CR)
     \f form feed (FF)
     \a alarm (bell) (BEL)
     \e escape (think troff) (ESC)
     \cK control char (example: VT)
-    \x{}, \x00 character whose ordinal is the given hexadecimal number
-    \N{name} named Unicode character or character sequence
-    \N{U+263D} Unicode character (example: FIRST QUARTER MOON)
-    \o{}, \000 character whose ordinal is the given octal number
-    \l lowercase next char (think vi)
-    \u uppercase next char (think vi)
-    \L lowercase till \E (think vi)
-    \U uppercase till \E (think vi)
-    \Q quote (disable) pattern metacharacters till \E
-    \E end either case modification or quoted section, think vi
+    \x{}, \x00 caractere cujo ordinah é um hexadecimal
+    \N{name} Nome de caractere Unicode ou sequência de caracteres
+    \N{U+263D} Caractere Unicode (ex: FIRST QUARTER MOON)
+    \o{}, \000 caractere cujo ordinal é um octal
+    \l minuscula
+    \u mauiscula
+    \L não maiuscula, incluindo outros caracteres
+    \U não minúscula, incluindo outros caracteres
 
 - Captura de Grupos
     (...)
+    (?<nome_do_grupo>...)  e depois imprime com $+{nome_do_grupo}
 
 Problemas do dia a dia:
 
@@ -155,7 +157,7 @@ Dado o texto abaixo, encontrar todos os emails nele contidos:
     Nunc dignissim orci a tellus suscipit ultricies. Donec lacinia semper dapibus. Pellentesque tincidunt, dolor in malesuada sagittis, odio velit adipiscing nisl, non lacinia massa magna ut felis. Phasellus semper tristique fringilla. Ut non nulla gravida, sollicitudin est eget, tempor sapien. Suspendisse condimentum augue non nisi dictum, in condimentum enim tempus. Nulla pharetra metus blandit luctus commodo. Aenean eget mauris a massa elementum ornare quis vel ipsum.
     Quisque et pulvinar neque, nec porta turpis. Proin ac justo vel augue sollicitudin tempus id quis erat. In tortor sem, bibendum id leo non, ullamcorper aliquet augue. Sed adipiscing vitae diam ac malesuada. Integer dapibus rutrum lorem sed auctor. Vivamus nisl sapien, facilisis at nisi eu, feugiat pretium tortor. Nullam luctus feugiat gravida. Fusce quis euismod risus. Vestibulum augue diam, commodo eget lorem in, vehicula ornare eros. Etiam sollicitudin, dui ac ornare dignissim, metus elit viverra arcu, ut sagittis massa est id dolor.
     Duis et nibh non neque dignissim venenatis et eu odio. Vivamus sit amet blandit ante. Fusce cursus aliquet arcu, eget hendrerit velit egestas nec. Mauris scelerisque, arcu eget consectetur pulvinar, leo orci malesuada augue, vitae porttitor ligula enim fermentum libero. Nam vehicula urna sit amet est porttitor congue. Cras email12@paragraph12.com condimentum felis et ligula commodo accumsan. Praesent volutpat interdum dolor eu feugiat. Aliquam vel elit laoreet, sagittis mauris sed, cursus velit. 
-  END
+END
 
   while ( $texto =~ m/(([^\s]+)\@([^\s]+))/gx ) {
     my $email = $1;
@@ -183,7 +185,7 @@ Dado o texto abaixo, encontrar todos os emails nele contidos:
   Maria da Silva - 30/12/1970 --- 30 anoos - mariana.da.silva@hotmail.com
   João Pereira ----- 22/11/1982 - 35 anooos --- joao.pereira@gmail.com
   Mariana Moura --- 07/02/1981 ---- 39 aaanos ---- mariana.moura@uol.com.br
-  END
+END
 
   print $var;
   my $new_var;
@@ -241,13 +243,151 @@ Dado o texto abaixo, encontrar todos os emails nele contidos:
   joao@.email.com         ( dominio comeca com ponto )
 
   Então é possível analisar alguns casos e chegar em um padrão para identificar emails nitidamente incorretos. (do ponto de vista da escrita do email)
-  Uma regex que pode verificar isso é 
+
+  Uma regex que pode verificar isso é a recomendada pelo site:
+    
+    http://www.regular-expressions.info/email.html
+    
+    A regex: [A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,4}
+
+    Explicacao: 
+    
+      [A-Z0-9._%+-]+
+      @
+      (?:[A-Z0-9-]+\.)+
+      [A-Z]{2,4}
+
+  Exemplo de uso da regex de email:
 
   $email = "sdodsj\@jdos.com";
   if ( $email =~ m/[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,4}/gi ) {
     print "yes"
   }
 
+  Exemplo 4: Como retirar acentos de uma string com perl e transliteração ?
+
+  my $str = "áééáouiÁ~-23eáé" ;
+  $str =~ tr/àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ/aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY/ ;   
+  print $str
+
+  SAIDA: aaaoaoaaouiaY~-23eaaao
+
+  Isso é perl, temos os:
+
+    m//   para fazer (m)atch
+    s///  para fazer (s)ubstituição
+    tr/// para fazer (tr)ansliteração
+
+
+  Transliteração: Trocar todas as ocorrências dos caracteres encontrados na lista de busca, 
+  
+  pelos caracteres corresondentes na lista de substituição.
+
+  Ou seja, no caso acima, a regex vai pegar um ç e substituir por c que é o caractere correspondente no lado direito da regex.
+
+Como criar e debugar uma regex ?
+
+  Um dos jeitos é setar a string numa variável, ex:
+
+  $texto = "0210301203 Tutorial-Regex-PT-BR 2013 Hernan Lopes"
+
+  e depois fazer match pra chegar no que vc precisa, ex: (se quisesse pegar o nome desse texto)
+
+  print $+{nome} #imprime o grupo de captura "nome"
+    if ( $texto =~ m/(?<id>\d+) (?<titulo>.+) (?<ano>\d+) (?<nome>.+)/ )
+
+  e no perl é fácil fazer isso em uma linha, direto no shell, com o comando:
+
+  perl -e '$texto = "0210301203 Tutorial-Regex-PT-BR 2013 Hernan Lopes" ; print $+{nome} if ( $texto =~ m/(?<id>\d+) (?<titulo>.+) (?<ano>\d+) (?<nome>.+)/ )'
+
+Erros comuns
+
+  Fazer match cegamente sem analisar os possíveis pontos de falha
+
+  Suponha que é dado o nome de um arquivo de imagem, e é necessário descobrir o tamanho do thumb desse arquivo:
+
+  alto-paraiso-300x300.jpg                    <- o tamanho fica antes da extensão
+
+  natacao-4x100meters-blablabla-300x300.png   <- tamanho antes da extensão, mas tem 4x100 metros, 
+  
+    * no caso natacao: será que a regex vai se confundir dependendo de como ela é pensada ?
+
+  Supondo que o thumbnail está sempre no final do arquivo, antes da extensão,
+  
+  é possível fazer, incorretamente, da seguinte maneira: 
+
+  Maneira1: utilizando a regex: /(?<tamanho_thumb>\d+x\d+)/
+
+  if ( "alto-paraiso-300x300.jpg" =~ m/(?<tamanho_thumb>\d+x\d+)/ ) {
+    print $+{tamanho_thumb}
+  }
+
+  SAIDA: 300x300 (correto)
+
+  if ( "natacao-4x100meters-blablabla-300x300.png" =~ m/(?<tamanho_thumb>\d+x\d+)/ ) {
+    print $+{tamanho_thumb}
+  }
+
+  SAIDA: 4x100 (INcorreto, deveria ser 300x300)
+
+  Motivo: A regex utilizada não é global, e portanto vai encontrar o primeiro \d+x\d+ que encontrar e vai retornar como resultado
+
+  Veja as capturas encontradas utilizando essa regex:
+
+  $var = "natacao-4x100meters-blablabla-300x300.png" ; 
+  use Data::Printer; 
+  warn p @capturas if ( @capturas = $var =~ m/(?<tamanho_thumb>\d+x\d+)+?/g )
+  [
+      [0] "4x100",        <--- encontrou 2 padrões que se encaixam na regex
+      [1] "300x300"       <--- esta é a que preciso, o último!
+  ]
+
+  Maneira2: Então uma das maneiras para arrumar isso seria: 
+
+  $var = "natacao-4x100meters-blablabla-300x300.png" ; 
+  use Data::Printer; 
+  warn @capturas[ scalar( @capturas ) - 1 ]   # total de capturas encontradas, menos 1,
+                                              # ou seja: a última captura encontrada
+    if ( @capturas = $var =~ m/(?<tamanho_thumb>\d+x\d+)/g )
+
+  SAIDA:  300x300 (que seria o correto) 
+
+  tendo em vista que thumbnail está sempre no final do arquivo, antes da extensão, 
+  
+  tambem seria possível criar uma regex que pega o tamanho do thumb proximo 
+  
+  do final do arquivo.
+
+  Maneira4: Utilizando uma regex por exemplo, assim: 
+
+  /(\d+x\d+)\.[a-zA-Z]{3,4}$/
+
+  Que seria: 
+  
+  (\d+x\d+)     Primeiro grupo: 1 ou mais digitos seguido de x seguido de 1 ou mais diditos
+  \.            depois vem um ponto obrigatório
+  [a-zA-Z]{3,4} verifica se tem 3 a 4 caracteres de a-z minúsculo ou A-Z maiúsculo
+                boa pois as extensoes tem 3 a 4 caracteres..ex: jpg jpeg png gif bmp
+  $             procura no final da linha
+
+  Na prática: 
+
+  $var = "natacao-4x100meters-blablabla-300x300.png"; 
+  warn   $+{tamanho_thumb}
+    if ( $var =~ m/(?<tamanho_thumb>\d+x\d+)\.[a-zA-Z]{3,4}$/g ) #é a regex acima
+
+  A dica é, pensar nas outras possibilidades... é necessário prever a maior possibilidade de casos possíveis.
+
+  As vezes a regex não é a prova de balas mas atende a necessidade. 
+  
+  A regex jamais deve ser incoerente com seu propósito. 
+
+
+
+
+
 REFERENCES:
 
 http://perldoc.perl.org/perlre.html
+
+http://www.regular-expressions.info/email.html
