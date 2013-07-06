@@ -182,6 +182,37 @@ Como localizar parentesis
       (011) 2123-8928 =~ m/\((\d+)\) (\d+)-(\d+)/
                              $1      $2    $3       (grupos 1, 2 e 3 são os parentesis não escapados)
 
+Regexes ineficientes
+  
+  Assim como todo tipo de processamento, ele pode ser mais, ou menos eficiente.
+
+  Uma implementação mal planejada pode ter um custo bastante alto de processamento desnecessário.
+
+  Por exemplo, se planeja encontrar a extensão de um arquivo, pode tomar uma vantagem tendo em vista que a extensão sempre está no final do nome do arquivo.
+
+  Então você faz uma regex, por exemplo: 
+  
+    m/\.(\w{3,4})$/g    Que vai procurar um . (ponto) seguido de 3 até 4 caracteres, no final da linha! Ou seja, 
+                        ja vai começar a procurar pelo final da linha... e caso não utilize a opção $ (final da linha)
+                        a regex será processada a partir do início, e isso pode aumentar o tempo no processamento se
+                        houver muitas strings a serem processadas. 
+                        Se a pessoa que está implementando a regex se sentir insegura, ela pode sempre utilizar o
+                        serviço de um bom debugador de regex interativo e assim a pessoa vê o passo a passo 
+                        da análise da regex.
+
+Como debugar uma regex
+
+  Para debugar uma regex, você pode utilizar o: 
+
+  Regexp::Debugger 
+  
+  http://search.cpan.org/~dconway/Regexp-Debugger-0.001013/lib/Regexp/Debugger.pm
+
+Regex nos editores de texto
+
+  Os editores de texto mais comuns, vim, emacs, textmate, sublime, todos tem suporte a regex.
+
+
 Problemas do dia a dia:
 
   Solução para o Caso 1: 
