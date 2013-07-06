@@ -134,9 +134,9 @@ Componentes de uma Regex:
       ((.+)(.+))(.+)  Aqui tenho 4 grupos, pois abre e fecham 4 parentesis
       
       ((.+)(.+))      Aqui tenho 3 grupos, pois abre e fecham 3 parentesis
-      ||   |terceiro parentesis abrindo     = $3
-      ||segundo parentesis abrindo          = $2
-      |primeiro parentesis abrindo          = $1
+      ||   |- terceiro parentesis abrindo     = $3
+      ||-----  segundo parentesis abrindo     = $2
+      |------ primeiro parentesis abrindo     = $1
 
       Essas são as variáveis especiais às quais eu me referi. $1, $2, $3 ...etc.. é o primeiro grupo, segundo grupo...
 
@@ -157,6 +157,30 @@ Exemplos rápidos
                 essa url tem alguma coisa que não é barra, e só depois vem a barra.
                 com essa regex eu conseguiria extrair "dominio.com.br" que estaria
                 no grupo1 (primeiro parentesis)
+
+Como localizar parentesis
+
+  O parentesis serve para criar grupos em regex, ex: (.+)
+  Mas como fazer para localizar parentesis no texto ?
+  É simples, apenas escape a regex, ex:
+
+    /algumacoisa (.+) e algo entre parentesis \((.+)\)/
+
+  o mesmo se aplica para todos os caracteres utilizados pela engine da regex.. é só escapar eles com 1 barra \
+
+    \.
+    \+
+    \)
+    \(
+    etc.
+
+    ex: perl -e ' $var = "aaaa++AA"; print 1 if $var =~ m/\+/; '
+        printa 1 se tiver um \+ em $var
+
+    e com o parentesis, um bom exemplo são os números de telefone: 
+    
+      (011) 2123-8928 =~ m/\((\d+)\) (\d+)-(\d+)/
+                             $1      $2    $3       (grupos 1, 2 e 3 são os parentesis não escapados)
 
 Problemas do dia a dia:
 
@@ -191,11 +215,23 @@ Dado o texto abaixo, encontrar todos os emails nele contidos:
     Duis et nibh non neque dignissim venenatis et eu odio. Vivamus sit amet blandit ante. Fusce cursus aliquet arcu, eget hendrerit velit egestas nec. Mauris scelerisque, arcu eget consectetur pulvinar, leo orci malesuada augue, vitae porttitor ligula enim fermentum libero. Nam vehicula urna sit amet est porttitor congue. Cras email12@paragraph12.com condimentum felis et ligula commodo accumsan. Praesent volutpat interdum dolor eu feugiat. Aliquam vel elit laoreet, sagittis mauris sed, cursus velit. 
 END
 
-  while ( $texto =~ m/(([^\s]+)\@([^\s]+))/gx ) {
+  while ( $texto =~ m/(([^\s]+)@([^\s]+))/gx ) {
     my $email = $1;
     print $email,"\n";
   }
 
+  Essa regex não é a melhor regex para email, fiz ela simples apenas para exemplificar o  problema. A explicação a seguir:
+  
+  (([^\s]+)\@([^\s]+)) quer dizer:
+  
+  (([^\s]+)   qualquer coisa que não seja espaço, mas tem acertos e falhas ex: 
+                acertos:   myemail@bla.com meu-email@bla.com empresa@brasil.com.br
+                falhas:    myemail@a ;myemail@b \myemail[@l
+                Ou seja, esses emails todos iriam ser aceitos como match para esta regex.
+                Isso prova que ela não é tão eficiente para detectar emails incorretos
+  @           obrigatoriamente um email
+  ([^\s]+))   qualquer coisa que não seja espaço
+    
 
   Solução para o Caso 2:
 
