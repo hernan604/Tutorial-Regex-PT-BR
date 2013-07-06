@@ -1,5 +1,5 @@
-Regex Matching
-O que são regexes, como funcionam e exemplos práticos
+Regex Matching Manual do iniciante: O que são regexes, como funcionam e exemplos práticos
+
 por: Hernan Lopes
 
 O que são regexes
@@ -126,6 +126,37 @@ Componentes de uma Regex:
 - Captura de Grupos
     (...)
     (?<nome_do_grupo>...)  e depois imprime com $+{nome_do_grupo}
+
+    A captura de grupos é vantajosa porque os grupos são armazenados em variáveis especiais que podem ser utilizadas após rodar a regex.
+
+    Funcionamento: Cada abertura de parentesis, conta +1, ex:
+      
+      ((.+)(.+))(.+)  Aqui tenho 4 grupos, pois abre e fecham 4 parentesis
+      
+      ((.+)(.+))      Aqui tenho 3 grupos, pois abre e fecham 3 parentesis
+      ||   |terceiro parentesis abrindo     = $3
+      ||segundo parentesis abrindo          = $2
+      |primeiro parentesis abrindo          = $1
+
+      Essas são as variáveis especiais às quais eu me referi. $1, $2, $3 ...etc.. é o primeiro grupo, segundo grupo...
+
+      Outra opção é nomear a captura, isso permite acessar uma variável especial $+{nome_do_grupo}, ex:
+
+       (?<primeiro_grupo>(?<segundo_grupo>.+)(?<terceiro_grupo>.+)) é a mesma coisa que: ((.+)(.+))
+
+      e para imprimir o valor, é só fazer: $+{primeiro_grupo} que é bem mais prático
+
+Exemplos rápidos
+  
+  (.+)        alguma coisa necessariamente com no mínimo 1 caractede
+  (.*)        pode ter alguma coisa ou pode não ter
+  [^\/]       não barra (escapei a barra) [^] significa não alguma coisa
+  ([^\/]+)\/  tudo menos barra até chegar numa barra. Isso seria útil para
+                fazer match numa url por exemplo: 
+                  dominio.com.br/ 
+                essa url tem alguma coisa que não é barra, e só depois vem a barra.
+                com essa regex eu conseguiria extrair "dominio.com.br" que estaria
+                no grupo1 (primeiro parentesis)
 
 Problemas do dia a dia:
 
