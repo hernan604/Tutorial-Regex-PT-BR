@@ -26,6 +26,31 @@ Quando usar regex ?
     "email, nome, idade, data aniversário"
   OBS: perceba que os - (traços) as vezes se repetem 1 ou mais vezes
 
+  Caso 3:
+
+  Você tem em mãos um arquivo css, e precisa transformar em um objeto reutilizavel, ex:
+
+  Dada a lista:
+  
+  body .languages-list .lang.c        { background: background-position: -10px -410px; }
+  body .languages-list .lang.c-sharp  { background: background-position: -20px -420px; }
+  body .languages-list .lang.cpp      { background: background-position: -30px -430px; }
+  body .languages-list .lang.java     { background: background-position: -40px -440px; }
+  body .languages-list .lang.perl     { background: background-position: -50px -450px; }
+  body .languages-list .lang.python   { background: background-position: -60px -460px; }
+
+  Transforme em objeto por exemplo, no caso da primeira linha:
+
+  {
+      'linguagem' : 'c',
+      'css'       : 'background: background-position: -10px -410px;'
+  },
+  {
+      'linguagem' : 'c-sharp',
+      'css'       : 'background: background-position: -20px -420px;'
+  }
+  etc...
+
 Como identificar uma regex ?
 
   Assim como as strings são representadas por "texto" ou 'texto'
@@ -325,6 +350,52 @@ END
   [a]{1,}[n]{1,}[o]{1,}[s]{1,}    palavra anos que pode estar escrita com 1 ou mais a, 1 ou mais n, 1 ou mais o e 1 ou mais s
   -{1,}                           no mínimo 1 traço
   (.+)                            alguma coisa, neste caso sempre vai ser o email que esta logo após a data
+
+
+  Solução Caso 3:
+
+  Você tem em mãos um arquivo css, e precisa transformar em um objeto reutilizavel, ex:
+
+  Dada a lista:
+  
+  body .languages-list .lang.c        { background: background-position: -10px -410px; }
+  body .languages-list .lang.c-sharp  { background: background-position: -20px -420px; }
+  body .languages-list .lang.cpp      { background: background-position: -30px -430px; }
+  body .languages-list .lang.java     { background: background-position: -40px -440px; }
+  body .languages-list .lang.perl     { background: background-position: -50px -450px; }
+  body .languages-list .lang.python   { background: background-position: -60px -460px; }
+
+  Transforme em objeto por exemplo, no caso da primeira linha:
+
+  {
+      'linguagem' : 'c',
+      'css'       : 'background: background-position: -10px -410px;'
+  },
+  {
+      'linguagem' : 'c-sharp',
+      'css'       : 'background: background-position: -20px -420px;'
+  }
+  etc...
+
+
+  Solução, simples, utilize uma regex que captura:
+
+    body .languages-list .lang.(nome da linguagem antes de aparecer um espaço)(seguido de espaços){ background: background-position: -(valor2)px -(valor2)px; }
+
+  o que resulta em uma regex como esta por exemplo:
+
+    body .languages-list .lang.(?<linguagem>[^\s]+)(\s*){ (?<css_stuff>\d+) }
+
+  solução em perl oneliner:
+
+  perl -e ' my $var = "body .languages-list .lang.c        { background: background-position: -10px -410px; }"; \
+            if ( $var =~ m/body .languages-list .lang.(?<linguagem>[^\s]+)(\s*){ (?<css_stuff>.+)n\"css\": \"$+{css_stuff}\",\n\"linguagem\": \"$+{linguagem}\"\n}"; }  '
+
+  SAIDA: 
+  {
+      "css": "background: background-position: -10px -410px;",
+      "linguagem": "c"
+  }
 
 
   Exemplo 3 - Validar email:
