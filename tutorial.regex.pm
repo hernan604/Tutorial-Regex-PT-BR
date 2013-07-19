@@ -26,6 +26,26 @@ Quando usar regex ?
     "email, nome, idade, data aniversário"
   OBS: perceba que os - (traços) as vezes se repetem 1 ou mais vezes
 
+  Caso 3:
+
+  É dada um objeto com 1,000,000 atributos no seguinte formato:
+
+    Pessoa = {
+      nome               : function(){},
+      sobrenome          : function(){},
+      idade              : function(){},
+      email              : function(){},
+    }
+
+  E a tarefa é alinhar os atributos para ficarem mais próximos do ':', conforme exemplo a seguir:
+
+    Pessoa = {
+                     nome: function(){},
+                sobrenome: function(){},
+                    idade: function(){},
+                    email: function(){},
+    }
+
 Como identificar uma regex ?
 
   Assim como as strings são representadas por "texto" ou 'texto'
@@ -325,6 +345,46 @@ END
   [a]{1,}[n]{1,}[o]{1,}[s]{1,}    palavra anos que pode estar escrita com 1 ou mais a, 1 ou mais n, 1 ou mais o e 1 ou mais s
   -{1,}                           no mínimo 1 traço
   (.+)                            alguma coisa, neste caso sempre vai ser o email que esta logo após a data
+
+
+  Caso 3: 
+
+  É fornecido um objeto pessoa e sua tarefa é deixar ele mais bonitinho... alinhando os atributos para a direita, para ficarem mais proximos dos dois pontos.
+
+    Pessoa = {
+      nome               : function(){},
+      sobrenome          : function(){},
+      idade              : function(){},
+      email              : function(){},
+    }
+
+  Solução opção 1: Fazer manualmente
+  Solução opção 2: Utilizar a regex: s/(\s+)([^ ]+)(\s+):/\1\3\2:/
+  
+  Que nada mais é que: 
+
+  s/
+  (\s+)       primeiro vem espaços                  (captura de grupo $1)
+  ([^ ]+)     depois vem coisas que não são espaços (captura de grupo $2)
+  (\s+)       e depois vem espaços denovo           (captura de grupo $3)
+  :           e depois vem um dois pontos
+  /
+  \1          substitua pelo captura $1.. no caso são os espaços que antecedem os atributos
+  \3          coloque a captura $3, que são os espaços que sucedem os atributos
+  \2          e agora sim coloque a captura $2, que é o atributo
+  :           e depois coloque um dois pontos...
+  /
+
+  ao final vc vai ter um objeto com no seguinte formato
+
+    Pessoa = {
+                     nome: function(){},
+                sobrenome: function(){},
+                    idade: function(){},
+                    email: function(){},
+    }
+
+
 
 
   Exemplo 3 - Validar email:
